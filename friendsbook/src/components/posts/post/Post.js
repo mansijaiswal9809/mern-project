@@ -22,9 +22,9 @@ const Post = ({ post, setCurrentId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem("profile"));
-  console.log(user?.authData?.sub)
-  console.log(user?.authData?._id)
-  console.log(post.creator)
+  // console.log(user?.authData?.sub)
+  // console.log(user?.authData?._id)
+  // console.log(post.creator)
   return (
     <Card className={classes.card}>
       <CardMedia

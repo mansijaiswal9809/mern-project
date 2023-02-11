@@ -5,7 +5,7 @@ export const fetchAll = createAsyncThunk(
   "fetch/fetchall",
   async (_, thunkAPI) => {
     try {
-      const { data } = await api.fetchpost();
+      const { data } = await api.fetchPosts();
       return data;
     } catch (err) {
       console.log(err);
@@ -37,6 +37,18 @@ export const updatePost = createAsyncThunk(
     }
   }
 );
+export const getPostBySearch = createAsyncThunk(
+  "searchpost/fetchbysearch",
+  async (searchQuery, thunkAPI) => {
+    try {
+      const { data:{data} } = await api.fetchPostsBySearch(searchQuery);
+      // console.log(data)
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 export const deletePost = createAsyncThunk(
   "delete/deletePost",
   async (id, thunkAPI) => {
@@ -50,17 +62,15 @@ export const deletePost = createAsyncThunk(
     }
   }
 );
-export const likePost=createAsyncThunk(
-    "like",async(id,thunkAPI)=>{
-      try{
-          // console.log("liked")
-            const {data}= await api.likePost(id)
-            return data
-        }catch(err){
-            console.log(err)
-        }
-    }
-)
+export const likePost = createAsyncThunk("like", async (id, thunkAPI) => {
+  try {
+    // console.log("liked")
+    const { data } = await api.likePost(id);
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+});
 const postSlice = createSlice({
   name: "Posts",
   initialState: [],
@@ -73,7 +83,7 @@ const postSlice = createSlice({
     builder
       .addCase(fetchAll.fulfilled, (state, action) => {
         state = action.payload;
-        return state
+        return state;
       })
       .addCase(createPost.fulfilled, (state, action) => {
         state.push(action.payload);
@@ -89,11 +99,18 @@ const postSlice = createSlice({
         state = state.filter((post) => post._id !== id);
         return state;
       })
-      .addCase(likePost.fulfilled, (state,action)=>{
-        state = state.map((post)=>post._id===action.payload._id?action.payload:post)
-        return state
+      .addCase(likePost.fulfilled, (state, action) => {
+        state = state.map((post) =>
+          post._id === action.payload._id ? action.payload : post
+        );
+        return state;
       })
-     
+      .addCase(getPostBySearch.fulfilled, (state, action) => {
+      // console.log(action)
+      state=action.payload
+      // console.log(state)
+      return state
+      });
   },
 });
 

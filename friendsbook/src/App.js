@@ -7,9 +7,8 @@ import Auth from "./components/auth/Auth";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import PostDetails from "./components/postdetails/PostDetails";
 
-
 const App = () => {
-  const user= JSON.parse(localStorage.getItem("profile"))
+  const user = JSON.parse(localStorage.getItem("profile"));
   return (
     <GoogleOAuthProvider clientId="362554887217-k0bctu8qargkcb0fi7qj5tl6d4b84o8k.apps.googleusercontent.com">
       <BrowserRouter>
@@ -17,10 +16,14 @@ const App = () => {
           <Navbar />
           <Routes>
             <Route exact path="/" element={<Navigate to="/posts" />} />
-            <Route exact path="/posts" element={<Home/>}/>
-            <Route exact path="/search" element={<Home />} />
-            <Route exact path="/:id" element={<PostDetails />} />
-            <Route path="/auth" element={!user?<Auth />:<Navigate to="/"/>} />
+            <Route exact path="/posts" element={<Home />} />
+            <Route path="/posts/search" exact element={<Home />} />
+            <Route path="/posts/:id" element={<PostDetails />} />
+            <Route
+              exact
+              path="/auth"
+              element={!user ? <Auth /> : <Navigate to="/" />}
+            />
           </Routes>
         </Container>
       </BrowserRouter>
