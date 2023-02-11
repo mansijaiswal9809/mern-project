@@ -25,11 +25,11 @@ export const createPost = createAsyncThunk(
 );
 export const updatePost = createAsyncThunk(
   "upadate/updatePost",
-  async ({ currentId, postData }, thunkAPI) => {
+  async ({ currentId, postdata }, thunkAPI) => {
     // console.log(currentId)
     // console.log(postData)
     try {
-      const { data } = await api.updatePost(currentId, postData);
+      const { data } = await api.updatePost(currentId, postdata);
       // console.log(data)
       return { data, currentId };
     } catch (err) {
@@ -43,7 +43,7 @@ export const deletePost = createAsyncThunk(
     // console.log("delete")
     try {
       const { data } = await api.deletePost(id);
-      console.log(data)
+      // console.log(data)
       return { data, id };
     } catch (err) {
       console.log(err);

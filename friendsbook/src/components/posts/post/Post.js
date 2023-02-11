@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@material-ui/core/";
 import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
+import ThumbUpAltOutlined from "@material-ui/icons/ThumbUpAlt";
 import DeleteIcon from "@material-ui/icons/Delete";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import moment from "moment";
@@ -20,7 +21,10 @@ import { deletePost, likePost } from "../../../reducer/posts";
 const Post = ({ post, setCurrentId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
-
+  const user = JSON.parse(localStorage.getItem("profile"));
+  console.log(user?.authData?.sub)
+  console.log(user?.authData?._id)
+  console.log(post.creator)
   return (
     <Card className={classes.card}>
       <CardMedia
@@ -32,19 +36,22 @@ const Post = ({ post, setCurrentId }) => {
         title={post.title}
       />
       <div className={classes.overlay}>
-        <Typography variant="h6">{post.creator}</Typography>
+        <Typography variant="h6">{post.name}</Typography>
         <Typography variant="body2">
           {moment(post.createdAt).fromNow()}
         </Typography>
       </div>
       <div className={classes.overlay2}>
-        <Button
-          style={{ color: "white" }}
-          size="small"
-          onClick={() => setCurrentId(post._id)}
-        >
-          <MoreHorizIcon fontSize="medium" />
-        </Button>
+        {(user?.authData?.sub === post.creator ||
+          user?.authData?._id === post.creator) && (
+            <Button
+              style={{ color: "white" }}
+              size="small"
+              onClick={() => setCurrentId(post._id)}
+            >
+              <MoreHorizIcon fontSize="medium" />
+            </Button>
+          )}
       </div>
       <div className={classes.details}>
         <Typography variant="body2" color="textSecondary" component="h2">
@@ -65,17 +72,25 @@ const Post = ({ post, setCurrentId }) => {
         </Typography>
       </CardContent>
       <CardActions className={classes.cardActions}>
-        <Button size="small" color="primary" onClick={()=>dispatch(likePost(post._id))}>
-          <ThumbUpAltIcon fontSize="small" /> Like {post.likeCount}{" "}
-        </Button>
         <Button
           size="small"
-          color="primary" 
-          fontSize="small"
-          onClick={()=>dispatch(deletePost(post._id))}
+          color="primary"
+          disabled={!user?.authData}
+          onClick={() => dispatch(likePost(post._id))}
         >
-          <DeleteIcon /> Delete
+          <ThumbUpAltIcon /> {post.likes.length} likes
         </Button>
+        {(user?.authData?.sub === post.creator ||
+          user?.authData?._id === post.creator) && (
+            <Button
+              size="small"
+              color="primary"
+              fontSize="small"
+              onClick={() => dispatch(deletePost(post._id))}
+            >
+              <DeleteIcon /> Delete
+            </Button>
+          )}
       </CardActions>
     </Card>
   );

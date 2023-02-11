@@ -9,10 +9,10 @@ import { fetchAll } from '../../reducer/posts';
 const Posts = ({setCurrentId}) => {
   const dispatch=useDispatch()
   const posts = useSelector((state) => state.posts);
-  console.log(posts)
+  // console.log(posts)
   const classes = useStyles();
   useEffect(()=>{
-    console.log("xnjubcvd")
+    // console.log("xnjubcvd")
     dispatch(fetchAll())
   },[])
 

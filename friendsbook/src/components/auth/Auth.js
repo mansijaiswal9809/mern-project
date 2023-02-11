@@ -1,33 +1,65 @@
-import { Avatar, Button, Container, Grid, Paper,Typography } from "@material-ui/core";
+import {
+  Avatar,
+  Button,
+  Container,
+  Grid,
+  Paper,
+  Typography,
+} from "@material-ui/core";
 import React, { useState } from "react";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Input from "./Input";
-import useStyles from "./styles"
-import {GoogleLogin,GoogleLogout} from "@react-oauth/google"
+import useStyles from "./styles";
+import { GoogleLogin, GoogleLogout } from "@react-oauth/google";
+import { googleAuth, signIn, signUp } from "../../reducer/user";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+const initialState={
+  firstName:"",
+  lastName:"",
+  email:"",
+  password:"",
+  confirmPassword:"",
+
+}
+
 const Auth = () => {
-    const [isSignUp, setIsSignUp]= useState(false)
-    const [visible,setVisible]= useState(false)
-    const user= false
-    const classes= useStyles()
-    const switchMode=()=>{
-        setIsSignUp(!isSignUp)
-        setVisible(false)
+  const navigate= useNavigate()
+  const dispatch = useDispatch();
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [formData, setFormData]= useState(initialState)
+  const user = false;
+  const classes = useStyles();
+  const switchMode = () => {
+    setIsSignUp(!isSignUp);
+    setVisible(false);
+  };
+  const handleShowPassword = () => {
+    setVisible(!visible);
+  };
+  const handleChange = (e) => {
+    setFormData({...formData,[e.target.name]:e.target.value})
+  };
+  const HandleSubmit = (e) => {
+    e.preventDefault()
+    // console.log(formData)
+    if(isSignUp){
+      dispatch(signUp({formData}))
+      navigate("/")
+    }else{
+      dispatch(signIn({formData}))
+      navigate("/")
     }
-    const handleShowPassword=()=>{
-        setVisible(!visible)
-    }
-    const handleChange=(e)=>{ 
-
-    }
-    const HandleSubmit=()=>{
-
-    }
-    const googleSuccess=async(res)=>{
-      console.log(res)
-    }
-    const googleFailure=(err)=>{
-      console.log(err)
-    }
+  };
+  const googleSuccess = (response) => {
+    dispatch(googleAuth(response));
+    navigate("/")
+  };
+  const googleFailure = (err) => {
+    console.log(err);
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -51,7 +83,7 @@ const Auth = () => {
                 />
                 <Input
                   name="lastName"
-                  label="La   st Name"
+                  label="Last Name"
                   handleChange={handleChange}
                   autoFocus
                   half
@@ -72,23 +104,35 @@ const Auth = () => {
               handleShowPassword={handleShowPassword}
             />
             {isSignUp && (
-              <Input  
+              <Input
                 name="confirmPassword"
-                label="Confirm   Password"
+                label="Confirm Password"
                 handleChange={handleChange}
                 type="password"
               />
             )}
           </Grid>
-          {!isSignUp &&<GoogleLogin onSuccess={googleSuccess} onError={googleFailure}/>}
-          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
-            {isSignUp?"Sign Up": "sign In"}
+          {!isSignUp && (
+            <GoogleLogin onSuccess={googleSuccess} onError={googleFailure} />
+          )}
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+          >
+            {isSignUp ? "Sign Up" : "sign In"}
           </Button>
-            <Grid container justify-content="center">
-                <Grid item xs={12}>
-                    <Button onClick={switchMode} fullWidth>{isSignUp?'already have an account? Sign In ':'do not have an account?Sign Up'}</Button>
-                </Grid>
+          <Grid container justify-content="center">
+            <Grid item xs={12}>
+              <Button onClick={switchMode} fullWidth>
+                {isSignUp
+                  ? "already have an account? Sign In "
+                  : "do not have an account?Sign Up"}
+              </Button>
             </Grid>
+          </Grid>
         </form>
       </Paper>
     </Container>
@@ -96,4 +140,3 @@ const Auth = () => {
 };
 
 export default Auth;
-  
