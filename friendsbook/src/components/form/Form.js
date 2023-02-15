@@ -8,6 +8,8 @@ import useStyles from './styles';
 import { createPost, getPosts, updatePost } from '../../reducer/posts';
 
 const Form = ({ currentId, setCurrentId }) => {
+  const {currentPage}=useSelector((store)=>store.posts)
+  console.log(currentPage)
   const [postData, setPostData] = useState({ title: '', message: '', tags: [], selectedFile: '' });
   const post = useSelector((state) => (currentId ? state.posts.posts.find((message) => message._id === currentId) : null));
   const dispatch = useDispatch();
@@ -27,10 +29,10 @@ const Form = ({ currentId, setCurrentId }) => {
     e.preventDefault();
 
     if (currentId === 0) {
-      createPost({ ...postData, name: user?.authData?.name }).then(()=>dispatch(getPosts()))
+      createPost({ ...postData, name: user?.authData?.name }).then(()=>dispatch(getPosts(currentPage)))
       clear();
     } else {
-      updatePost(currentId, { ...postData, name: user?.authData?.name }).then(()=>dispatch(getPosts()));
+      updatePost(currentId, { ...postData, name: user?.authData?.name }).then(()=>dispatch(getPosts(currentPage)));
       clear();
     }
   };

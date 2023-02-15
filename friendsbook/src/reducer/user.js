@@ -15,20 +15,22 @@ export const googleAuth = createAsyncThunk(
 );
 export const signIn = createAsyncThunk(
   "signin/manual",
-  async ({ formData }) => {
+  async ({ formData,navigate }) => {
     try {
       const { data } = await signin(formData);
+      navigate("/")
       return data;
     } catch (error) {
-      console.log(error);
+      console.log("error",error.message);
     }
   }
 );
 export const signUp = createAsyncThunk(
   "signup/manual",
-  async ({ formData }) => {
+  async ({ formData ,navigate}) => {
     try {
       const { data } = await signup(formData);
+      navigate("/")
       return data;
     } catch (error) {
       console.log(error);

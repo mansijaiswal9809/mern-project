@@ -14,17 +14,6 @@ export const getPosts = createAsyncThunk(
     }
   }
 );
-// export const createPost = createAsyncThunk(
-//   "create/createpost",
-//   async (post, thunkAPI) => {
-//     try {
-//       const { data } = await api.createPost(post);
-//       return data;
-//     } catch (err) {
-//       console.log(err);
-//     }
-//   }
-// );
 export const createPost = async (post) => {
   try {
     const { data } = await api.createPost(post);
@@ -33,12 +22,12 @@ export const createPost = async (post) => {
     console.log(error);
   }
 };
-export const updatePost = async ({ currentId, postdata }) => {
+export const updatePost = async ( currentId, postdata ) => {
   // console.log(currentId)
   // console.log(postData)
   try {
     const { data } = await api.updatePost(currentId, postdata);
-    console.log(data.msg);
+    // console.log(data.msg);
   } catch (err) {
     console.log(err);
   }
@@ -90,7 +79,17 @@ export const commentPost = createAsyncThunk(
     }
   }
 );
-
+export const deleteComment= createAsyncThunk(
+  'deleteComment', async({postId,userId})=>{
+    try {
+      const {data}= await api.deleteComment(postId,userId)
+      // console.log(data)
+      return data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+)
 export const getPost = createAsyncThunk(
   "getPost/getSinglePost",
   async (id, thunkAPI) => {
@@ -112,11 +111,6 @@ const initialState = {
 const postSlice = createSlice({
   name: "Posts",
   initialState,
-  reducers: {
-    create: (state) => {
-      return state;
-    },
-  },
   extraReducers: (builder) => {
     builder
       .addCase(
@@ -124,22 +118,10 @@ const postSlice = createSlice({
         (state, { payload: { data, numberOfPages, currentPage } }) => {
           state.posts = data;
           state.numberOfPages = numberOfPages;
+          state.currentPage=currentPage
           return state;
         }
       )
-      // .addCase(createPost.fulfilled, (state, action) => {
-      //   state.posts.push(action.payload);
-      // })
-      // .addCase(
-      //   updatePost.fulfilled,
-      //   (state, { payload: { currentId, data } }) => {
-      //     return state.posts.map((po) => (po._id === currentId ? data : po));
-      //   }
-      // )
-      // .addCase(deletePost.fulfilled, (state, { payload: { id, data } }) => {
-      //   state.posts = state.posts.filter((post) => post._id !== id);
-      //   return state;
-      // })
       .addCase(likePost.fulfilled, (state, action) => {
         state.posts = state.posts.map((post) =>
           post._id === action.payload._id ? action.payload : post
@@ -160,7 +142,14 @@ const postSlice = createSlice({
         );
         updatedpost = action.payload;
         return state;
-      });
+      })
+      .addCase(deleteComment.fulfilled,(state,action)=>{
+        let updatedpost = state.posts.find(
+          (item) => item._id === action.payload._id
+        );
+        updatedpost = action.payload;
+        return state;
+      })
   },
 });
 

@@ -98,12 +98,23 @@ export const getPostsBySearch = async (req, res) => {
 
 export const commentPost = async (req, res) => {
   const { id } = req.params;
-  const { name,comment } = req.body;
+  const { name,comment,userId } = req.body;
   // console.log(name,id,comment);
   const post = await PostMessage.findById(id);
-  post.comments.push(`${name}:${comment}`);
+  post.comments.push(`${userId}:${name}:${comment}`);
   const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
     new: true,
   });
   res.json(updatedPost);
 };
+export const deleteComment= async(req,res)=>{
+  const {id} = req.params;
+  const {userId}= req.body;
+  const post = await PostMessage.findById(id)
+  let comment= post.comments.find((comment)=>comment.split(":")[0]===userId)
+  // console.log(comment)
+  post.comments=post.comments.filter((c)=>c!==comment)
+  const updatedPost= await PostMessage.findByIdAndUpdate(id,post,{new:true})
+  // console.log(updatedPost)
+  res.json(updatedPost)
+}
