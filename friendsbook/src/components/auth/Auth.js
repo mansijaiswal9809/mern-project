@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Input from "./Input";
 import useStyles from "./styles";
-import { GoogleLogin, GoogleLogout } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 import { googleAuth, signIn, signUp } from "../../reducer/user";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -30,7 +30,7 @@ const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [visible, setVisible] = useState(false);
   const [formData, setFormData]= useState(initialState)
-  const user = false;
+  // const user = false;
   const classes = useStyles();
   const switchMode = () => {
     setIsSignUp(!isSignUp);

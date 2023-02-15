@@ -5,11 +5,11 @@ import useStyles from "./styles";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logOut } from "../../reducer/user";
-import { useSelector } from "react-redux";
 import  decode from "jwt-decode"
 
+
 const Navbar = () => {
-  const {authData,token}= useSelector((store)=>store.user)
+  // const {authData,token}= useSelector((store)=>store.user)
   // console.log(authData,token)
   const classes = useStyles();
   const dispatch= useDispatch()

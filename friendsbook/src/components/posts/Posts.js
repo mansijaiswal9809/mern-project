@@ -1,28 +1,23 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Grid, CircularProgress } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
-
+import { useSelector } from 'react-redux';
 import Post from './post/Post';
 import useStyles from './styles';
-import { fetchAll } from '../../reducer/posts';
 
-const Posts = ({setCurrentId}) => {
-  const dispatch=useDispatch()
-  const posts = useSelector((state) => state.posts);
+const Posts = ({ setCurrentId }) => {
+  const  posts  = useSelector((state) => state.posts.posts);
   // console.log(posts)
   const classes = useStyles();
-  useEffect(()=>{
-    // console.log("xnjubcvd")
-    dispatch(fetchAll())
-  },[])
-
+const isLoading=false
+  // if (!posts.length && !isLoading) return 'No posts';
   return (
-    !posts.length ? <CircularProgress /> : (
+    isLoading ? <CircularProgress /> : (
       <Grid className={classes.container} container alignItems="stretch" spacing={3}>
         {posts?.map((post) => (
           <Grid key={post._id} item xs={12} sm={12} md={6} lg={4}>
             <Post post={post} setCurrentId={setCurrentId} />
           </Grid>
+          // "kjjhd"
         ))}
       </Grid>
     )
@@ -30,3 +25,5 @@ const Posts = ({setCurrentId}) => {
 };
 
 export default Posts;
+
+// posts

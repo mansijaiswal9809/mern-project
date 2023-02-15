@@ -9,7 +9,7 @@ import Posts from '../posts/Posts';
 import Form from '../form/Form';
 import Pagination from '../Pagination';
 import useStyles from './styles';
-import { getPostBySearch } from '../../reducer/posts';
+import { getPostsBySearch } from '../../reducer/posts';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -28,7 +28,8 @@ const Home = () => {
 
   const searchPost = () => {
     if (search.trim() || tags) {
-      dispatch(getPostBySearch({ search, tags: tags.join(',') }));
+      dispatch(getPostsBySearch({ search, tags: tags.join(',') }));
+      // console.log(searchQuery)
       navigate(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.join(',')}`);
     } else {
       navigate('/');

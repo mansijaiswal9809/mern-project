@@ -1,47 +1,56 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import * as api from "../api";
 
-export const fetchAll = createAsyncThunk(
+export const getPosts = createAsyncThunk(
   "fetch/fetchall",
-  async (_, thunkAPI) => {
+  async (page, thunkAPI) => {
+    // console.log(page)
     try {
-      const { data } = await api.fetchPosts();
-      return data;
-    } catch (err) {
-      console.log(err);
-    }
-  }
-);
-export const createPost = createAsyncThunk(
-  "create/createpost",
-  async (post, thunkAPI) => {
-    try {
-      const { data } = await api.createPost(post);
-      return data;
-    } catch (err) {
-      console.log(err);
-    }
-  }
-);
-export const updatePost = createAsyncThunk(
-  "upadate/updatePost",
-  async ({ currentId, postdata }, thunkAPI) => {
-    // console.log(currentId)
-    // console.log(postData)
-    try {
-      const { data } = await api.updatePost(currentId, postdata);
+      const { data } = await api.fetchPosts(page);
       // console.log(data)
-      return { data, currentId };
+      return data;
     } catch (err) {
       console.log(err);
     }
   }
 );
-export const getPostBySearch = createAsyncThunk(
+// export const createPost = createAsyncThunk(
+//   "create/createpost",
+//   async (post, thunkAPI) => {
+//     try {
+//       const { data } = await api.createPost(post);
+//       return data;
+//     } catch (err) {
+//       console.log(err);
+//     }
+//   }
+// );
+export const createPost = async (post) => {
+  try {
+    const { data } = await api.createPost(post);
+    console.log(data.message);
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const updatePost = async ({ currentId, postdata }) => {
+  // console.log(currentId)
+  // console.log(postData)
+  try {
+    const { data } = await api.updatePost(currentId, postdata);
+    console.log(data.msg);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getPostsBySearch = createAsyncThunk(
   "searchpost/fetchbysearch",
   async (searchQuery, thunkAPI) => {
     try {
-      const { data:{data} } = await api.fetchPostsBySearch(searchQuery);
+      const {
+        data: { data },
+      } = await api.fetchPostsBySearch(searchQuery);
       // console.log(data)
       return data;
     } catch (error) {
@@ -49,19 +58,15 @@ export const getPostBySearch = createAsyncThunk(
     }
   }
 );
-export const deletePost = createAsyncThunk(
-  "delete/deletePost",
-  async (id, thunkAPI) => {
-    // console.log("delete")
-    try {
-      const { data } = await api.deletePost(id);
-      // console.log(data)
-      return { data, id };
-    } catch (err) {
-      console.log(err);
-    }
+export const deletePost = async (id) => {
+  try {
+    const { data } = await api.deletePost(id);
+    console.log(data.message);
+  } catch (err) {
+    console.log(err);
   }
-);
+};
+
 export const likePost = createAsyncThunk("like", async (id, thunkAPI) => {
   try {
     // console.log("liked")
@@ -71,9 +76,42 @@ export const likePost = createAsyncThunk("like", async (id, thunkAPI) => {
     console.log(err);
   }
 });
+
+export const commentPost = createAsyncThunk(
+  "comment",
+  async (value, thunkAPI) => {
+    // console.log(value)
+    try {
+      const { data } = await api.comment(value);
+      // console.log(data)
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const getPost = createAsyncThunk(
+  "getPost/getSinglePost",
+  async (id, thunkAPI) => {
+    try {
+      const { data } = await api.fetchPost(id);
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+const initialState = {
+  posts: [],
+  currentPage: 1,
+  numberOfPages: 0,
+  post: {},
+};
 const postSlice = createSlice({
   name: "Posts",
-  initialState: [],
+  initialState,
   reducers: {
     create: (state) => {
       return state;
@@ -81,38 +119,49 @@ const postSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAll.fulfilled, (state, action) => {
-        state = action.payload;
-        return state;
-      })
-      .addCase(createPost.fulfilled, (state, action) => {
-        state.push(action.payload);
-      })
       .addCase(
-        updatePost.fulfilled,
-        (state, { payload: { currentId, data } }) => {
-          return state.map((po) => (po._id === currentId ? data : po));
+        getPosts.fulfilled,
+        (state, { payload: { data, numberOfPages, currentPage } }) => {
+          state.posts = data;
+          state.numberOfPages = numberOfPages;
+          return state;
         }
       )
-      .addCase(deletePost.fulfilled, (state, { payload: { id, data } }) => {
-        // console.log(action.payload)
-        state = state.filter((post) => post._id !== id);
-        return state;
-      })
+      // .addCase(createPost.fulfilled, (state, action) => {
+      //   state.posts.push(action.payload);
+      // })
+      // .addCase(
+      //   updatePost.fulfilled,
+      //   (state, { payload: { currentId, data } }) => {
+      //     return state.posts.map((po) => (po._id === currentId ? data : po));
+      //   }
+      // )
+      // .addCase(deletePost.fulfilled, (state, { payload: { id, data } }) => {
+      //   state.posts = state.posts.filter((post) => post._id !== id);
+      //   return state;
+      // })
       .addCase(likePost.fulfilled, (state, action) => {
-        state = state.map((post) =>
+        state.posts = state.posts.map((post) =>
           post._id === action.payload._id ? action.payload : post
         );
         return state;
       })
-      .addCase(getPostBySearch.fulfilled, (state, action) => {
-      // console.log(action)
-      state=action.payload
-      // console.log(state)
-      return state
+      .addCase(getPostsBySearch.fulfilled, (state, action) => {
+        state.posts = action.payload;
+        return state;
+      })
+      .addCase(getPost.fulfilled, (state, action) => {
+        state.post = action.payload;
+        return state;
+      })
+      .addCase(commentPost.fulfilled, (state, action) => {
+        let updatedpost = state.posts.find(
+          (item) => item._id === action.payload._id
+        );
+        updatedpost = action.payload;
+        return state;
       });
   },
 });
 
-export const { create } = postSlice.actions;
 export default postSlice.reducer;
