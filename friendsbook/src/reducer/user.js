@@ -21,7 +21,8 @@ export const signIn = createAsyncThunk(
       navigate("/")
       return data;
     } catch (error) {
-      console.log("error",error.message);
+      // console.log("error",error.message);
+      alert("either your email or password incorrect")
     }
   }
 );
@@ -33,7 +34,8 @@ export const signUp = createAsyncThunk(
       navigate("/")
       return data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+      alert("either you are already a user or your passwords don't match")
     }
   }
 );

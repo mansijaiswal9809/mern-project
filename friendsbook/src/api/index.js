@@ -1,6 +1,6 @@
 import axios from "axios";
 // const url = "http://localhost:5000/posts";
-const API = axios.create({ baseURL: " http://localhost:5000" });
+const API = axios.create({ baseURL: "https://friendsbook-api.onrender.com" });
 API.interceptors.request.use((req) => {
   if (localStorage.getItem("profile")) {
     req.headers.authorization = `Bearer ${

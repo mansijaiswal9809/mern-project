@@ -6,20 +6,19 @@ export const getPosts = async (req, res) => {
   try {
     const LIMIT = 9;
     const startIndex = (Number(page) - 1) * LIMIT; // get the starting index of every page
-
     const total = await PostMessage.countDocuments({});
     const posts = await PostMessage.find()
       .sort({ _id: -1 })
       .limit(LIMIT)
       .skip(startIndex);
 
-    res.json({
+    return res.json({
       data: posts,
       currentPage: Number(page),
       numberOfPages: Math.ceil(total / LIMIT),
     });
   } catch (error) {
-    res.status(404).json({ message: error.message });
+   return res.status(404).json({ message: error.message });
   }
 };
 export const getPost = async (req, res) => {
@@ -28,14 +27,13 @@ export const getPost = async (req, res) => {
   try {
     const post = await PostMessage.findById(id);
     // console.log(post)
-    res.status(200).json(post);
+   return res.status(200).json(post);
   } catch (error) {
-    res.status(404).json("cant fetch");
+   return res.status(404).json("cant fetch");
   }
 };
 export const createPost = async (req, res) => {
   const post = req.body;
-
   const newPostMessage = new PostMessage({
     ...post,
     creator: req.userId,
@@ -43,9 +41,9 @@ export const createPost = async (req, res) => {
   });
   try {
     await newPostMessage.save();
-    res.status(201).json({message:"post saved"});
+    return res.status(201).json({message:"post saved"});
   } catch (err) {
-    res.status(409).json({ message: err.message });
+    return res.status(409).json({ message: err.message });
   }
 };
 export const updatePost = async (req, res) => {
@@ -55,14 +53,14 @@ export const updatePost = async (req, res) => {
     return res.status(404).send(`No post with id: ${id}`);
   const updatedPost = { creator, title, message, tags, selectedFile, _id: id };
   await PostMessage.findByIdAndUpdate(id, updatedPost, { new: true });
-  res.json({message:"post updated"});
+ return res.json({message:"post updated"});
 };
 export const deletePost = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(404).send(`No post with id: ${id}`);
   await PostMessage.findByIdAndRemove(id);
-  res.json({ message: "Post has been deleted successfully" });
+  return res.json({ message: "Post has been deleted successfully" });
 };
 
 export const likePost = async (req, res) => {
@@ -80,7 +78,7 @@ export const likePost = async (req, res) => {
   const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
     new: true,
   });
-  res.json(updatedPost);
+  return res.json(updatedPost);
 };
 
 export const getPostsBySearch = async (req, res) => {
@@ -90,9 +88,9 @@ export const getPostsBySearch = async (req, res) => {
     const posts = await PostMessage.find({
       $or: [{ title }, { tags: { $in: tags.split(",") } }],
     });
-    res.json({ data: posts });
+    return res.json({ data: posts });
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    return res.status(404).json({ message: error.message });
   }
 };
 
@@ -105,7 +103,7 @@ export const commentPost = async (req, res) => {
   const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
     new: true,
   });
-  res.json(updatedPost);
+  return res.json(updatedPost);
 };
 export const deleteComment= async(req,res)=>{
   const {id} = req.params;
@@ -116,5 +114,5 @@ export const deleteComment= async(req,res)=>{
   post.comments=post.comments.filter((c)=>c!==comment)
   const updatedPost= await PostMessage.findByIdAndUpdate(id,post,{new:true})
   // console.log(updatedPost)
-  res.json(updatedPost)
+ return res.json(updatedPost)
 }

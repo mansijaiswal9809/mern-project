@@ -10,7 +10,7 @@ export const getPosts = createAsyncThunk(
       // console.log(data)
       return data;
     } catch (err) {
-      console.log(err);
+      alert("Something went wrong")
     }
   }
 );
@@ -19,17 +19,14 @@ export const createPost = async (post) => {
     const { data } = await api.createPost(post);
     console.log(data.message);
   } catch (error) {
-    console.log(error);
+    alert("Something went wrong")
   }
 };
 export const updatePost = async ( currentId, postdata ) => {
-  // console.log(currentId)
-  // console.log(postData)
   try {
-    const { data } = await api.updatePost(currentId, postdata);
-    // console.log(data.msg);
+     await api.updatePost(currentId, postdata);
   } catch (err) {
-    console.log(err);
+    alert("Something went wrong")
   }
 };
 
@@ -43,16 +40,15 @@ export const getPostsBySearch = createAsyncThunk(
       // console.log(data)
       return data;
     } catch (error) {
-      console.log(error);
+      alert("Something went wrong")
     }
   }
 );
 export const deletePost = async (id) => {
   try {
-    const { data } = await api.deletePost(id);
-    console.log(data.message);
+  await api.deletePost(id); 
   } catch (err) {
-    console.log(err);
+    alert("Something went wrong")
   }
 };
 
@@ -62,7 +58,7 @@ export const likePost = createAsyncThunk("like", async (id, thunkAPI) => {
     const { data } = await api.likePost(id);
     return data;
   } catch (err) {
-    console.log(err);
+    alert("Something went wrong")
   }
 });
 
@@ -75,7 +71,7 @@ export const commentPost = createAsyncThunk(
       // console.log(data)
       return data;
     } catch (error) {
-      console.log(error);
+      alert("Something went wrong")
     }
   }
 );
@@ -86,7 +82,7 @@ export const deleteComment= createAsyncThunk(
       // console.log(data)
       return data
     } catch (error) {
-      console.log(error)
+      alert("Something went wrong")
     }
   }
 )
@@ -97,7 +93,7 @@ export const getPost = createAsyncThunk(
       const { data } = await api.fetchPost(id);
       return data;
     } catch (error) {
-      console.log(error);
+      alert("Something went wrong")
     }
   }
 );

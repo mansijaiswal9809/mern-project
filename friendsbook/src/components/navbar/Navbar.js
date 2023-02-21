@@ -1,5 +1,5 @@
 import { AppBar, Avatar, Button, Toolbar, Typography } from "@material-ui/core";
-import {  Link } from "react-router-dom";
+import {  Link, NavLink } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import useStyles from "./styles";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -68,7 +68,7 @@ const Navbar = () => {
           </div>
         ) : (
             <Button
-            component={Link}
+            component={NavLink}
             to="/auth"
             variant="contained"
             className={classes.logout}

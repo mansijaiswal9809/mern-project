@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { TextField, Button, Typography, Paper } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import FileBase from 'react-file-base64';
-import { useNavigate } from 'react-router-dom';
 import ChipInput from 'material-ui-chip-input';
 import useStyles from './styles';
 import { createPost, getPosts, updatePost } from '../../reducer/posts';
 
 const Form = ({ currentId, setCurrentId }) => {
   const {currentPage}=useSelector((store)=>store.posts)
-  console.log(currentPage)
+  // console.log(currentPage)
   const [postData, setPostData] = useState({ title: '', message: '', tags: [], selectedFile: '' });
   const post = useSelector((state) => (currentId ? state.posts.posts.find((message) => message._id === currentId) : null));
   const dispatch = useDispatch();
