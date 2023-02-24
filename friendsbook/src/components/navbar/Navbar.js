@@ -1,11 +1,22 @@
-import { AppBar, Avatar, Button, Toolbar, Typography } from "@mui/material";
+import {
+  AppBar,
+  Avatar,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { Link, NavLink } from "react-router-dom";
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logOut } from "../../reducer/user";
 import decode from "jwt-decode";
 import { deepPurple } from "@mui/material/colors";
+import Profile from "../Profile";
+import { Box } from "@mui/system";
 
 const Navbar = () => {
   // const {authData,token}= useSelector((store)=>store.user)
@@ -15,6 +26,18 @@ const Navbar = () => {
   const location = useLocation();
   // const user = null;
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleCloseLogout = () => {
+    handleClose();
+    logout();
+  };
   // console.log(user)
   const logout = () => {
     dispatch(logOut());
@@ -32,7 +55,7 @@ const Navbar = () => {
   return (
     <AppBar
       sx={{
-        borderRadius: 15,
+        borderRadius: 2,
         margin: "30px 0",
         display: "flex",
         flexDirection: "row",
@@ -54,16 +77,14 @@ const Navbar = () => {
           FriendsBook
         </Typography>
       </div>
-      <Toolbar
-        sx={{ display: "flex", justifyContent: "flex-end", width: "400px" }}
-      >
-        {user ? (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: "400px",
-            }}
+      {user && (
+        <Box sx={{ display: { xs: "inline-block", md: "none" } }}>
+          <Button
+            id="basic-button"
+            aria-controls={open ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClick}
           >
             <Avatar
               sx={{ bgcolor: deepPurple[500] }}
@@ -72,31 +93,34 @@ const Navbar = () => {
             >
               {user?.authData?.name.charAt(0)}
             </Avatar>
-            <Typography
-              sx={{ display: "flex", alignItems: "center" }}
-              variant="h6"
-            >
-              {user?.authData?.name}
-            </Typography>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={logout}
-            >
-              Logout
-            </Button>
-          </div>
-        ) : (
-          <Button
-            component={NavLink}
-            to="/auth"
-            variant="contained"
-            color="primary"
-          >
-            Sign in
           </Button>
-        )}
-      </Toolbar>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem onClick={handleClose}>{user?.authData?.name}</MenuItem>
+            <MenuItem onClick={handleCloseLogout}>Logout</MenuItem>
+          </Menu>
+        </Box>
+      )}
+      {!user && (
+        <Tooltip
+          title="Click to Sign In"
+          sx={{ display: { xs: "inline-block", md: "none" } }}
+        >
+          <IconButton component={NavLink} to="/auth">
+            <Avatar sx={{ bgcolor: deepPurple[500] }}>S</Avatar>
+          </IconButton>
+        </Tooltip>
+      )}
+      <Box sx={{ display: { xs: "none", md: "inline-block" } }}>
+        <Profile user={user} logout={logout} />
+      </Box>
     </AppBar>
   );
 };
