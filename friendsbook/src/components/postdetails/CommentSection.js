@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Typography, TextField, Button } from "@material-ui/core/";
+import { Typography, TextField, Button } from "@mui/material";
 import { useDispatch } from "react-redux";
-import DeleteIcon from '@material-ui/icons/Delete';
-import useStyles from "./styles";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { commentPost, deleteComment } from "../../reducer/posts";
+
 
 const CommentSection = ({ post }) => {
   // console.log(post,"post")
@@ -11,7 +11,6 @@ const CommentSection = ({ post }) => {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState(post.comments);
   const dispatch = useDispatch();
-  const classes = useStyles();
   const commentsRef = useRef();
   // console.log(comments)
   const userId = user?.authData?.sub || user?.authData?._id;
@@ -22,7 +21,7 @@ const CommentSection = ({ post }) => {
         name: user?.authData?.name,
         comment: comment,
         id: post._id,
-        userId
+        userId,
       })
     );
     // console.log(newComments, "vdhckb")
@@ -33,14 +32,18 @@ const CommentSection = ({ post }) => {
   useEffect(() => {
     setComments(post.comments);
   }, [post]);
-  const handleDeleteComment=async()=>{
-    const newComments= await dispatch(deleteComment({postId:post._id,userId}))
-    setComments(newComments.payload.comments)
-  }
+  const handleDeleteComment = async () => {
+    const newComments = await dispatch(
+      deleteComment({ postId: post._id, userId })
+    );
+    setComments(newComments.payload.comments);
+  };
   return (
     <div>
-      <div className={classes.commentsOuterContainer}>
-        <div className={classes.commentsInnerContainer}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div
+          style={{ height: "200px", overflowY: "auto", marginRight: "30px" }}
+        >
           <Typography gutterBottom variant="h6">
             Comments
           </Typography>
@@ -49,7 +52,11 @@ const CommentSection = ({ post }) => {
               <Typography key={i} gutterBottom variant="subtitle1">
                 <strong>{c && c.split(":")[1]}</strong>
                 <span> {c && c.split(":")[2]}</span>
-                {userId === c.split(":")[0] ? <Button onClick={handleDeleteComment}><DeleteIcon/></Button> : null}
+                {userId === c.split(":")[0] ? (
+                  <Button onClick={handleDeleteComment}>
+                    <DeleteIcon />
+                  </Button>
+                ) : null}
               </Typography>
             ))}
           <div ref={commentsRef} />

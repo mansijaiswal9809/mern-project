@@ -5,33 +5,29 @@ import {
   Grid,
   Paper,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import React, { useState } from "react";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Input from "./Input";
-import useStyles from "./styles";
 import { GoogleLogin } from "@react-oauth/google";
 import { googleAuth, signIn, signUp } from "../../reducer/user";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-const initialState={
-  firstName:"",
-  lastName:"",
-  email:"",
-  password:"",
-  confirmPassword:"",
-
-}
+const initialState = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
 
 const Auth = () => {
-  const navigate= useNavigate()
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isSignUp, setIsSignUp] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [formData, setFormData]= useState(initialState)
-  // const user = false;
-  const classes = useStyles();
+  const [formData, setFormData] = useState(initialState);
   const switchMode = () => {
     setIsSignUp(!isSignUp);
     setVisible(false);
@@ -40,22 +36,22 @@ const Auth = () => {
     setVisible(!visible);
   };
   const handleChange = (e) => {
-    setFormData({...formData,[e.target.name]:e.target.value})
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const HandleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     // console.log(formData)
-    if(isSignUp){
-      dispatch(signUp({formData,navigate}))
+    if (isSignUp) {
+      dispatch(signUp({ formData, navigate }));
       // navigate("/")
-    }else{
-      dispatch(signIn({formData,navigate}))
+    } else {
+      dispatch(signIn({ formData, navigate }));
       // navigate("/")
     }
   };
   const googleSuccess = (response) => {
     dispatch(googleAuth(response));
-    navigate("/")
+    navigate("/");
   };
   const googleFailure = (err) => {
     console.log(err);
@@ -63,14 +59,29 @@ const Auth = () => {
 
   return (
     <Container component="main" maxWidth="xs">
-      <Paper className={classes.paper} elevation={3}>
-        <Avatar className={classes.avatar}>
+      <Paper
+        sx={{
+          mt: (theme) => theme.spacing(8),
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          p: 2,
+          "& .MuiTextField-root": { m: 1 },
+        }}
+        elevation={3}
+      >
+        <Avatar
+          sx={{
+            m: 1,
+            backgroundColor: (theme) => theme.palette.secondary.main,
+          }}
+        >
           <LockOutlinedIcon />
         </Avatar>
         <Typography variant="h5">
           {!isSignUp ? "Sign In" : "Sign Up"}
         </Typography>
-        <form className={classes.form} onSubmit={HandleSubmit}>
+        <form style={{marginTop:"3rem", width:"100%" }} onSubmit={HandleSubmit}>
           <Grid container spacing={2}>
             {isSignUp && (
               <>
@@ -120,7 +131,7 @@ const Auth = () => {
             fullWidth
             variant="contained"
             color="primary"
-            className={classes.submit}
+            margin={2}
           >
             {isSignUp ? "Sign Up" : "sign In"}
           </Button>
