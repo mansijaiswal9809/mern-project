@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, Typography, Paper, Chip, Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import FileBase from 'react-file-base64';
+import FileBase64 from 'react-file-base64';
 
 import { createPost, getPosts, updatePost } from '../../reducer/posts';
 
@@ -68,7 +68,7 @@ const Form = ({ currentId, setCurrentId }) => {
           <TextField label="Enter Tags" value={tag} onChange={(e)=>setTag(e.target.value)} onKeyDown={handleAddChip} fullWidth/>
           {postData && postData.tags.map((tag,i)=><Chip key={i} label={tag} onDelete={()=>handleDeleteChip(tag)}/>)}
         </div>
-        <div style={{width:"97%", margin:"10px 0"}} ><FileBase type="file" multiple={false} onDone={({ base64 }) => setPostData({ ...postData, selectedFile: base64 })} /></div>
+        <div style={{width:"97%", margin:"10px 0"}} ><FileBase64 type="file" multiple={false} onDone={({ base64 }) => setPostData({ ...postData, selectedFile: base64 })} /></div>
         <Button sx={{mb:1}} variant="contained" color="primary" size="large" type="submit" fullWidth onClick={handleSubmit}>Submit</Button>
         <Button variant="contained" color="secondary" size="small" onClick={clear} fullWidth>Clear</Button>
         </Box>
